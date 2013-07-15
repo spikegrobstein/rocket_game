@@ -8,8 +8,10 @@
     // place it someplace cool.
 
     this.downward_velocity = 0;
-    this.fuel = 500;
+    this.fuel = 10;
 
+    this.blast_factor = 2.25; // a multiple of the gravity that the rocket has
+    this.blast_consumption = 0.1;
     this.rocket_blasting = false;
 
     this.x = 0;
@@ -51,16 +53,22 @@
         alert('You died. Your velocity was: ' + this.downward_velocity);
       } else {
         if (this.downward_velocity != 0) {
-        alert('You win!');
-
+          alert('You win!');
         }
       }
       this.downward_velocity = 0;
       return;
     }
 
+    if (this.fuel <= 0) {
+      this.rocket_blasting = false;
+      this.element.style.backgroundImage = 'url("rocket_off.png")';
+    }
+
     if (this.rocket_blasting) {
-      this.downward_velocity += globals.world.gravity * 2;
+      this.downward_velocity += globals.world.gravity * this.blast_factor;
+      this.fuel -= this.blast_consumption;
+
     } else {
       this.downward_velocity -= globals.world.gravity;
     }
@@ -72,7 +80,7 @@
 
   var World = function( element ) {
     this.element = element;
-    this.gravity = 0.1;
+    this.gravity = 0.01;
     this.rocket = new Rocket( element );
 
     this.status = document.getElementById('rocket_status');
@@ -83,7 +91,7 @@
   World.prototype.step = function() {
     this.rocket.step();
 
-    this.status.innerHTML = 'Downward speed: ' + Math.round(this.rocket.downward_velocity * 100) / 100;
+    this.status.innerHTML = 'Downward speed: ' + (Math.round(this.rocket.downward_velocity * 100) / 100) + ' Fuel: ' + Math.round(this.rocket.fuel);
   }
 
   // main loop
@@ -93,6 +101,10 @@
 
   document.addEventListener('keydown', function(event) {
     if (event.which == 32) { // space
+      if (globals.world.rocket.fuel <= 0) {
+        return;
+      }
+
       globals.world.rocket.rocket_blasting = true;
       globals.world.rocket.element.style.backgroundImage = 'url("rocket_on.png")';
     }
