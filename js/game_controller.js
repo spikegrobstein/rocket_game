@@ -13,6 +13,7 @@ window.requestAnimFrame = function(){
 
 (function( globals, document ) {
   var GameController = function( element, options ) {
+    this.ticks = 0; // incremented for each frame that's displayed.
     this.element = element;
     this.frame_delay = 10;
     this.sprites = [];
@@ -27,6 +28,7 @@ window.requestAnimFrame = function(){
 
     requestAnimFrame(this.run.bind(this));
     this.step();
+    this.ticks += 1;
   };
 
   GameController.prototype.step = function(timestamp) {
@@ -34,22 +36,10 @@ window.requestAnimFrame = function(){
     for ( sprite in this.sprites ) {
       sprite = this.sprites[sprite];
 
-      sprite.step();
+      sprite.step( this );
     }
   };
 
-  var field = document.getElementById('rocket_game');
+  globals.GameController = GameController;
 
-  var game_controller = new GameController( field );
-
-  var rocket_element = document.createElement('div');
-  rocket_element.setAttribute('class', 'rocket');
-  field.appendChild(rocket_element);
-
-  var rocket = new Sprite( rocket_element, { speed: 1 });
-  game_controller.add_sprite( rocket );
-
-  game_controller.run();
-
-  globals.game_controller = game_controller;
 })( window, document );
