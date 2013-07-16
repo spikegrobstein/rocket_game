@@ -21,5 +21,8 @@
     console.log('space was released');
   });
 
+  keyboard_driver.handle('A', function() { console.log('a was pressed' ) } );
+
+  globals.keyboard_driver = keyboard_driver;
   globals.game_controller = game_controller;
 })( window, document );
