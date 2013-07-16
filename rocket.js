@@ -14,11 +14,6 @@
     this.blast_consumption = 0.1;
     this.rocket_blasting = false;
 
-    this.x = 0;
-    this.y = 0;
-
-    this.element = this.build_element( field );
-
     return this;
   };
 

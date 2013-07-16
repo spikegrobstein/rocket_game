@@ -13,9 +13,13 @@
 
   game_controller.run();
 
-  // var keyboard_driver = new KeybordDriver();
-  
-  document.addEventListener
+  var keyboard_driver = new KeyboardDriver(game_controller.message_bus);
+
+  keyboard_driver.handle(' ', function() {
+    console.log('space was pressed');
+  }, function() {
+    console.log('space was released');
+  });
 
   globals.game_controller = game_controller;
 })( window, document );

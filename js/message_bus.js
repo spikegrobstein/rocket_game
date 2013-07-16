@@ -5,7 +5,7 @@
   };
 
   MessageBus.prototype.subscribe = function( message_type, callback ) {
-    if ( this.subscribers[message_type] === null ) {
+    if ( !this.subscribers[message_type] ) {
       this.subscribers[message_type] = [];
     }
 
@@ -13,7 +13,6 @@
   };
 
   MessageBus.prototype.publish = function( message_type, message ) {
-    console.log('publishing: ' + message_type);
     var subscribers = this.subscribers[message_type];
 
     if ( !subscribers ) { return; }
@@ -24,7 +23,7 @@
     for ( i in subscribers ) {
       subscriber = subscribers[i];
 
-      subscriber.apply( message_type, message );
+      subscriber( message_type, message );
     }
   };
 
