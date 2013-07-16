@@ -1,3 +1,16 @@
+window.requestAnimFrame = function(){
+    return (
+            window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function(/* function */ callback){
+                window.setTimeout(callback, 1000 / 60);
+            }
+        );
+}();
+
 (function( globals, document ) {
   var GameController = function( element, options ) {
     this.element = element;
@@ -9,11 +22,14 @@
     this.sprites.push( sprite );
   };
 
-  GameController.prototype.run = function() {
-    this.run_loop = setInterval( this.step.bind(this), this.frame_delay );
+  GameController.prototype.run = function(id) {
+    //this.run_loop = setInterval( this.step.bind(this), this.frame_delay );
+
+    requestAnimFrame(this.run.bind(this));
+    this.step();
   };
 
-  GameController.prototype.step = function() {
+  GameController.prototype.step = function(timestamp) {
     var sprite = null;
     for ( sprite in this.sprites ) {
       sprite = this.sprites[sprite];
