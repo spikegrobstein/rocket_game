@@ -36,6 +36,12 @@
   // fire one animation step.
   // based on the velocity, this will move the sprite one animation frame.
   Sprite.prototype.step = function() {
+    if ( this.angle < 0 ) {
+      this.angle += 360;
+    } else if ( this.angle > 360 ){
+      this.angle -= 360;
+    }
+
     var angle_degrees = ((this.angle - 90) * (Math.PI/180)),
         scale_x = Math.cos( angle_degrees ),
         scale_y = Math.sin( angle_degrees ),
