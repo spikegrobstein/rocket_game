@@ -31,6 +31,8 @@ window.requestAnimFrame = function(){
 
   GameController.prototype.add_sprite = function( sprite ) {
     this.sprites.push( sprite );
+
+    sprite.game_controller = this;
   };
 
   GameController.prototype.run = function(id) {
