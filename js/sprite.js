@@ -13,6 +13,9 @@
     // velocities, etc.
     this.angle = options.angle || 0;
     this.speed = options.speed || 0;
+
+    // set this to true to have the element rotate
+    this.use_rotation = options.use_rotation || false;
   }
 
   // move this object to the given x,y coordinates
@@ -31,10 +34,19 @@
   // fire one animation step.
   // based on the velocity, this will move the sprite one animation frame.
   Sprite.prototype.step = function() {
-    var scale_x = Math.cos(this.angle * (Math.PI/180)),
-        scale_y = Math.sin(this.angle * (Math.PI/180)),
+    var angle_degrees = ((this.angle - 90) * (Math.PI/180)),
+        scale_x = Math.cos( angle_degrees ),
+        scale_y = Math.sin( angle_degrees ),
         dx = (this.speed * scale_x),
         dy = (this.speed * scale_y);
+
+    if ( this.use_rotation ) {
+      var rotation = 'rotate(' + this.angle + 'deg)';
+
+      this.element.style['transform'] = rotation;
+      this.element.style['-ms-transform'] = rotation;
+      this.element.style['-webkit-transform'] = rotation;
+    }
 
     this.move_to( this.x + dx, this.y + dy );
   };

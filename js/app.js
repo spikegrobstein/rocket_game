@@ -8,7 +8,7 @@
   rocket_element.setAttribute('class', 'rocket');
   field.appendChild(rocket_element);
 
-  var rocket = new Sprite( rocket_element, { speed: 1 });
+  var rocket = new Sprite( rocket_element, { speed: 1, use_rotation: true });
   game_controller.add_sprite( rocket );
 
   game_controller.run();
@@ -16,9 +16,7 @@
   var keyboard_driver = new KeyboardDriver(game_controller.message_bus);
 
   keyboard_driver.handle(' ', function() {
-    console.log('space was pressed');
-  }, function() {
-    console.log('space was released');
+    rocket.angle += 45;
   });
 
   keyboard_driver.handle('A', function() { console.log('a was pressed' ) } );
