@@ -8,7 +8,7 @@
 
       this.state[key] = true;
 
-      if ( this.handlers[key] ) {
+      if ( this.handlers[key] && this.handlers[key].down ) {
         this.handlers[key].down(this);
       }
     }.bind(this));
@@ -18,7 +18,7 @@
 
       this.state[key] = false;
 
-      if ( this.handlers[key] ) {
+      if ( this.handlers[key] && this.handlers[key].up ) {
         this.handlers[key].up(this);
       }
     }.bind(this));
