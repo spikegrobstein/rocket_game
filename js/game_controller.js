@@ -17,6 +17,16 @@ window.requestAnimFrame = function(){
     this.element = element;
     this.frame_delay = 10;
     this.sprites = [];
+
+    this.message_bus = new MessageBus();
+
+    document.addEventListener('keydown', function(event) {
+      this.message_bus.publish('keydown', event);
+    }.bind(this));
+
+    document.addEventListener('keyup', function(event) {
+      this.message_bus.publish('keyup', event);
+    }.bind(this));
   };
 
   GameController.prototype.add_sprite = function( sprite ) {

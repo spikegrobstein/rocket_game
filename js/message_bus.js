@@ -13,6 +13,7 @@
   };
 
   MessageBus.prototype.publish = function( message_type, message ) {
+    console.log('publishing: ' + message_type);
     var subscribers = this.subscribers[message_type];
 
     if ( !subscribers ) { return; }
