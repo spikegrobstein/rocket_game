@@ -35,45 +35,23 @@
   Sprite.prototype.move = function() {
     this.element.style.left = this.x + 'px';
     this.element.style.top = this.y + 'px';
-  }
+  };
 
   // calculate the angle based on velocities
   Sprite.prototype.angle = function() {
-    var degrees = null;
-    if ( this.velocity_x > 0 ) {
-      degrees = Math.tan( this.velocity_y / this.velocity_x ) * ( 180 / Math.PI );
-    } else {
-      degrees = 0;
+    var degrees = Math.atan2( this.velocity_x, -this.velocity_y ) * ( 180 / Math.PI );
+
+    degrees -= 90;
+    if ( degrees < 0 ) {
+      degrees += 360;
     }
 
-    // vx, vy
-    // 1, 1 -- 45
-    // 0, 1 -- 90
-    // -1, 1 -- 90 + 45
-    // -1, 0 -- 90 + 90
-    // -1, -1 -- 90 + 90 + 45
-    // 0, -1 -- 90 + 90 + 90
-    // 1, -1 -- 90 + 90 + 90 + 45
-    // 1, 0 -- 0
+    return degrees;
+  };
 
-    // quadrants:
-    //  2 | 3
-    // -------
-    //  1 | 0
-
-    var quadrant = 0;
-    if ( this.velocity_x >= 0 && this.velocity_y >= 0 ) {
-      quadrant = 0;
-    } else if ( this.velocity_x <= 0 && this.velocity_y >= 0 ) {
-      quadrant = 1;
-    } else if ( this.velocity_x <= 0 && this.velocity_y <= 0 ) {
-      quadrant = 2;
-    } else if ( this.velocity_x >= 0 && this.velocity_y <= 0 ) {
-      quadrant = 3;
-    }
-
-    return degrees + ( 90 * quadrant );
-  }
+  Sprite.prototype.speed = function() {
+      return Math.sqrt( Math.pow( this.velocity_x, 2 ) + Math.pow( this.velocity_y, 2 ) );
+  };
 
   Sprite.prototype.setAngle = function( angle, speed ) {
     var angle_radians = (( angle ) * ( Math.PI/180 )),
@@ -81,10 +59,8 @@
         scale_y = Math.sin( angle_radians );
 
     if ( typeof speed === 'undefined' ) {
-      speed = Math.sqrt( Math.pow( this.velocity_x, 2 ) + Math.pow( this.velocity_y, 2 ) );
+      speed = this.speed();
     }
-
-    console.log({angle_radians: angle_radians, scale_x: scale_x, scale_y: scale_y, speed:speed})
 
     this.velocity_x = ( speed * scale_x ),
     this.velocity_y = ( speed * scale_y );
