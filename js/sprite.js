@@ -39,8 +39,11 @@
 
   // calculate the angle based on velocities
   Sprite.prototype.angle = function() {
+    // need to inverse the y axis because it's kinda upside down
     var degrees = Math.atan2( this.velocity_x, -this.velocity_y ) * ( 180 / Math.PI );
 
+    // we want this angle to be in sync with the same angles that CSS uses for rotation
+    // so this ensures that what CSS calls 10 degress is the same thing we call 10 degrees
     degrees -= 90;
     if ( degrees < 0 ) {
       degrees += 360;
@@ -49,10 +52,12 @@
     return degrees;
   };
 
+  // return the speed based on the x and y velocities using the pythagorean theorum.
   Sprite.prototype.speed = function() {
       return Math.sqrt( Math.pow( this.velocity_x, 2 ) + Math.pow( this.velocity_y, 2 ) );
   };
 
+  // given an angle and speed, set the x/y velocities
   Sprite.prototype.setAngle = function( angle, speed ) {
     var angle_radians = (( angle ) * ( Math.PI/180 )),
         scale_x = Math.cos( angle_radians ),
