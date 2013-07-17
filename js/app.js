@@ -31,4 +31,5 @@
 
   globals.keyboard_driver = keyboard_driver;
   globals.game_controller = game_controller;
+
 })( window, document );
