@@ -22,6 +22,10 @@
 
     // set this to true to have the element rotate
     this.use_rotation = U.default_param( options.use_rotation, false );
+
+    this.timestamp = Date.now(); // a timestamp of when it was created
+
+    this.move(); // force it to the right locaion
   }
 
   Sprite.prototype.hasTag = function( tag ) {
