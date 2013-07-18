@@ -1,27 +1,25 @@
 (function( globals ) {
   var Sprite = function( element, options ) {
-    if ( options === undefined ) {
-      options = {};
-    }
+    options = U.default_param( options, {} );
 
     // initialize it with an element
     this.element = element;
 
-    this.x = options.x || 0;
-    this.y = options.y || 0;
+    this.x = U.default_param( options.x, 0 );
+    this.y = U.default_param( options.y, 0 );
 
     // velocities, etc.
     // this.angle = options.angle || 0;
     // this.speed = options.speed || 0;
 
     //velocities
-    this.velocity_x = options.velocity_x || 0;
-    this.velocity_y = options.velocity_y || 0;
+    this.velocity_x = U.default_param( options.velocity_x, 0 );
+    this.velocity_y = U.default_param( options.velocity_y, 0 );
 
     // set this to true to have the element rotate
-    this.use_rotation = options.use_rotation || false;
+    this.use_rotation = U.default_param( options.use_rotation, false );
 
-    this.game_controller = options.game_controller || null;
+    this.game_controller = U.default_param( options.game_controller, null );
   }
 
   // move this object to the given x,y coordinates
