@@ -14,8 +14,6 @@
 
     // set this to true to have the element rotate
     this.use_rotation = U.default_param( options.use_rotation, false );
-
-    this.game_controller = U.default_param( options.game_controller, null );
   }
 
   // move this object to the given x,y coordinates
