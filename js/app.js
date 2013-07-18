@@ -12,9 +12,9 @@
     rocket_element.setAttribute('class', 'rocket');
     field.appendChild(rocket_element);
 
-    rocket = new Sprite( rocket_element, {x:50 , y:380, use_rotation: true});
+    rocket = new Sprite( rocket_element, {x:300 , y:380, use_rotation: true});
 
-    var angle = Math.random() * 20 + 35;
+    var angle = Math.random() * 140;
     var speed = Math.random() * 6 + 16;
 
     rocket.setAngle(-angle, speed);
@@ -26,7 +26,7 @@
 
   var gravity = function( sprite ) {
     var g = .5;
-    var resistance = .025;
+    var resistance = 0;//.025;
 
     sprite.velocity_y += g;
 
@@ -37,7 +37,17 @@
     }
   };
 
+  var bounce = function( sprite ) {
+    var bounce_factor = .8;
+
+    if ( sprite.y > 400 ) {
+      sprite.y = 400;
+      sprite.velocity_y = -sprite.velocity_y * bounce_factor;
+    }
+  }
+
   game_controller.add_filter( gravity );
+  game_controller.add_filter( bounce );
 
   game_controller.run();
 

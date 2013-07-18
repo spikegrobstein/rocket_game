@@ -8,10 +8,6 @@
     this.x = U.default_param( options.x, 0 );
     this.y = U.default_param( options.y, 0 );
 
-    // velocities, etc.
-    // this.angle = options.angle || 0;
-    // this.speed = options.speed || 0;
-
     //velocities
     this.velocity_x = U.default_param( options.velocity_x, 0 );
     this.velocity_y = U.default_param( options.velocity_y, 0 );
