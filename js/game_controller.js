@@ -18,6 +18,7 @@ window.requestAnimFrame = function(){
     this.frame_delay = 10;
     this.sprites = [];
     this.filters = [];
+    this.emitters = [];
 
     this.message_bus = new MessageBus();
 
@@ -32,6 +33,8 @@ window.requestAnimFrame = function(){
 
   GameController.prototype.add_sprite = function( sprite ) {
     this.sprites.push( sprite );
+
+    this.element.appendChild( sprite.element );
 
     sprite.game_controller = this;
   };
@@ -48,16 +51,28 @@ window.requestAnimFrame = function(){
     this.filters.push( filter );
   }
 
+  GameController.prototype.add_emitter = function( emitter ) {
+    this.emitters.push( emitter );
+  }
+
   GameController.prototype.step = function(timestamp) {
+    var emitter = null;
+    for ( emitter in this.emitters ) {
+      emitter = this.emitters[emitter];
+
+      emitter.signal();
+    }
+
     var sprite = null;
     for ( sprite in this.sprites ) {
       sprite = this.sprites[sprite];
+
 
       var filter = null;
       for ( filter in this.filters ) {
         filter = this.filters[filter];
 
-        filter( sprite );
+        filter.call( sprite );
       }
 
       sprite.step( this );
