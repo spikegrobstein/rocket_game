@@ -17,6 +17,7 @@ window.requestAnimFrame = function(){
     this.element = element;
     this.frame_delay = 10;
     this.sprites = [];
+    this.filters = [];
 
     this.message_bus = new MessageBus();
 
@@ -43,10 +44,21 @@ window.requestAnimFrame = function(){
     this.ticks += 1;
   };
 
+  GameController.prototype.add_filter = function( filter ) {
+    this.filters.push( filter );
+  }
+
   GameController.prototype.step = function(timestamp) {
     var sprite = null;
     for ( sprite in this.sprites ) {
       sprite = this.sprites[sprite];
+
+      var filter = null;
+      for ( filter in this.filters ) {
+        filter = this.filters[filter];
+
+        filter( sprite );
+      }
 
       sprite.step( this );
     }

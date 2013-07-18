@@ -4,12 +4,40 @@
 
   var game_controller = new GameController( field );
 
-  var rocket_element = document.createElement('div');
-  rocket_element.setAttribute('class', 'rocket');
-  field.appendChild(rocket_element);
+  var rocket = null;
+  var i = 0;
+  for ( i = 0; i < 20; i++ ) {
+    var rocket_element = document.createElement('div');
 
-  var rocket = new Sprite( rocket_element, { velocity_x: .75, velocity_y: .75, use_rotation: true, x:375, y:275 });
-  game_controller.add_sprite( rocket );
+    rocket_element.setAttribute('class', 'rocket');
+    field.appendChild(rocket_element);
+
+    rocket = new Sprite( rocket_element, {x:50 , y:380, use_rotation: true});
+
+    var angle = Math.random() * 20 + 35;
+    var speed = Math.random() * 6 + 16;
+
+    rocket.setAngle(-angle, speed);
+    game_controller.add_sprite( rocket );
+  }
+
+  // var rocket = new Sprite( rocket_element, { velocity_x: .75, velocity_y: .75, use_rotation: true, x:50, y:380 });
+  // rocket.setAngle(-45, 5);
+
+  var gravity = function( sprite ) {
+    var g = .5;
+    var resistance = .025;
+
+    sprite.velocity_y += g;
+
+    if ( sprite.velocity_x > 0 ) {
+      sprite.velocity_x -= resistance;
+    } else {
+      sprite.velocity_x += resistance;
+    }
+  };
+
+  game_controller.add_filter( gravity );
 
   game_controller.run();
 
