@@ -12,6 +12,14 @@
     this.velocity_x = U.default_param( options.velocity_x, 0 );
     this.velocity_y = U.default_param( options.velocity_y, 0 );
 
+    this.tags = [];
+    var tags = U.default_param( options.tags, [] );
+    var tag = null;
+    for ( tag in tags ) {
+      tag = tags[tag];
+      this.tags.push( tag );
+    }
+
     // set this to true to have the element rotate
     this.use_rotation = U.default_param( options.use_rotation, false );
   }
