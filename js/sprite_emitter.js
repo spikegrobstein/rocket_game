@@ -9,11 +9,14 @@
     this.y = U.default_param( options.y, 0 );
 
     this.rate = U.default_param( options.rate, 60 ); // 60fps, 1s.
+
     this.max = U.default_param( options.max, 10 );
     this.count = 0;
 
     this.angle = U.default_param( options.angle, -90 );
     this.speed = U.default_param( options.speed, 20 );
+
+    this.splay = U.default_param( options.splay, 0) ;
   };
 
   SpriteEmitter.prototype.signal = function() {
@@ -37,7 +40,9 @@
 
     var sprite = new Sprite( element, { x:this.x, y:this.y, use_rotation:true } );
 
-    sprite.setAngle( this.angle, this.speed );
+    var splay_angle = this.angle + ( Math.random() * this.splay ) - ( this.splay / 2 )
+
+    sprite.setAngle( splay_angle, this.speed );
 
     this.controller.add_sprite( sprite );
 

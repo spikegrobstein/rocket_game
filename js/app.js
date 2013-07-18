@@ -62,8 +62,9 @@
 
   var emitter = new SpriteEmitter( game_controller, {
     angle:45,
-    speed: 10,
+    speed: 20,
     rate: 5,
+    splay: 45,
     x:10,
     y:420 } );
 
