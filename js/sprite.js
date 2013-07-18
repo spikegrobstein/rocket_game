@@ -24,6 +24,10 @@
     this.use_rotation = U.default_param( options.use_rotation, false );
   }
 
+  Sprite.prototype.hasTag = function( tag ) {
+    return this.tags.indexOf( tag ) >= 0;
+  };
+
   // move this object to the given x,y coordinates
   Sprite.prototype.move_to = function( x, y ) {
     this.x = x;
