@@ -12,7 +12,7 @@
     rocket_element.setAttribute('class', 'rocket');
     field.appendChild(rocket_element);
 
-    rocket = new Sprite( rocket_element, {x:300 , y:380, use_rotation: true});
+    rocket = new Sprite( rocket_element, {x:300 , y:380, use_rotation: true, tags:['no_gravity']});
 
     var angle = Math.random() * 140;
     var speed = Math.random() * 6 + 16;
@@ -27,6 +27,8 @@
   var gravity = function( sprite ) {
     var g = .5;
     var resistance = 0;//.025;
+
+    if ( sprite.hasTag('no_gravity') ) { return ; }
 
     sprite.velocity_y += g;
 
