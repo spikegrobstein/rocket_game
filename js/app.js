@@ -2,64 +2,61 @@
 
   var game_controller = new GameController( document.getElementById('rocket_game') );
 
-  var gravity = function() {
-        var g = .05;
-        var resistance = 0.5;//.025;
+  game_controller
+    .addBehavior( 'gravity', function() {
+      var g = .05;
+      var resistance = 0.5;//.025;
 
-        if ( this.hasTag('no_gravity') ) { return ; }
+      if ( this.hasTag('no_gravity') ) { return ; }
 
-        this.velocity_y += g;
+      this.velocity_y += g;
 
-        if ( this.velocity_x > 0 ) {
-          this.velocity_x -= resistance;
-        } else {
-          this.velocity_x += resistance;
+      if ( this.velocity_x > 0 ) {
+        this.velocity_x -= resistance;
+      } else {
+        this.velocity_x += resistance;
+      }
+
+    } )
+    .addBehavior( 'bounce', function() {
+      var bounce_factor = .8;
+
+      if ( this.hasTag('rocket') ) { return; }
+
+      if ( this.y > 400 ) {
+        this.y = 400;
+        this.velocity_y = -this.velocity_y * bounce_factor;
+      }
+
+    } )
+    .addBehavior( 'rocket_observer', function() {
+      if ( ! this.hasTag('rocket') ) { return; }
+
+      if ( this.y > 450 ) {
+        // alert('Boom: ' + this.velocity_y);
+        this.velocity_y = 0;
+        this.addTag('no_gravity');
+      }
+
+      if ( this.fuel > 0 ) {
+        if ( this.rocket_on ) {
+          this.velocity_y -= 0.25;
+          this.fuel -= 0.1
         }
-      },
+      }
 
-      bounce = function() {
-        var bounce_factor = .8;
+    } )
+    .addBehavior( 'death', function() {
+      if ( this.hasTag('rocket') ) { return; }
+      var life = 3000; // 5 seconds
 
-        if ( this.hasTag('rocket') ) { return; }
+      this.life = U.default_param( this.life, life );
 
-        if ( this.y > 400 ) {
-          this.y = 400;
-          this.velocity_y = -this.velocity_y * bounce_factor;
-        }
-      },
+      if ( Date.now() - this.timestamp > this.life ) {
+        this.dead = true;
+      }
 
-      rocket_observer = function() {
-        if ( ! this.hasTag('rocket') ) { return; }
-
-        if ( this.y > 450 ) {
-          // alert('Boom: ' + this.velocity_y);
-          this.velocity_y = 0;
-          this.addTag('no_gravity');
-        }
-
-        if ( this.fuel > 0 ) {
-          if ( this.rocket_on ) {
-            this.velocity_y -= 0.25;
-            this.fuel -= 0.1
-          }
-        }
-      },
-
-      death = function() {
-        if ( this.hasTag('rocket') ) { return; }
-        var life = 3000; // 5 seconds
-
-        this.life = U.default_param( this.life, life );
-
-        if ( Date.now() - this.timestamp > this.life ) {
-          this.dead = true;
-        }
-      };
-
-  game_controller.add_filter( gravity );
-  game_controller.add_filter( bounce );
-  game_controller.add_filter( rocket_observer );
-  game_controller.add_filter( death );
+    });
 
   var emitter = new SpriteEmitter( game_controller, {
     angle:-60,

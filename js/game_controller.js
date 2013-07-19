@@ -17,7 +17,7 @@ window.requestAnimFrame = function(){
     this.element = element;
     this.frame_delay = 10;
     this.sprites = [];
-    this.filters = [];
+    this.behaviors = {};
     this.emitters = [];
 
     this.message_bus = new MessageBus();
@@ -47,12 +47,21 @@ window.requestAnimFrame = function(){
     this.ticks += 1;
   };
 
-  GameController.prototype.add_filter = function( filter ) {
-    this.filters.push( filter );
+  GameController.prototype.addBehavior = function( name, behavior_handler ) {
+    this.behaviors[name] = behavior_handler ;
+
+    return this;
+  }
+
+  GameController.prototype.removeBehavior = function( name ) {
+    delete this.behaviors[name];
+
+    return this;
   }
 
   GameController.prototype.add_emitter = function( emitter ) {
     this.emitters.push( emitter );
+    return this;
   }
 
   GameController.prototype.step = function(timestamp) {
@@ -77,11 +86,12 @@ window.requestAnimFrame = function(){
       }
 
 
-      var filter = null;
-      for ( filter in this.filters ) {
-        filter = this.filters[filter];
+      // modify the sprite before having it step.
+      var behavior_handler = null;
+      for ( behavior in this.behaviors ) {
+        behavior = this.behaviors[behavior];
 
-        filter.call( sprite );
+        behavior.call( sprite, this );
       }
 
       sprite.step( this );
