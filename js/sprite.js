@@ -46,6 +46,17 @@
     return this;
   }
 
+  // remove the given tag
+  // return this to enable chaining.
+  Sprite.prototype.removeTag = function( tag ) {
+    var index = this.tags.indexOf( tag );
+    if ( index >= 0 ) {
+      this.tags.splice( index );
+    }
+
+    return this;
+  }
+
   // move this object to the given x,y coordinates
   Sprite.prototype.move_to = function( x, y ) {
     this.x = x;
