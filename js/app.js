@@ -101,7 +101,7 @@
   // left
   keyboard_driver.handle(37, function() {
     this.velocity_x -= 1;
-  });
+  }.bind(rocket));
   // right
   keyboard_driver.handle(39, function() {
     this.velocity_x += 1;
