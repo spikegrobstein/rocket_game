@@ -62,11 +62,14 @@
 
   var emitter = new SpriteEmitter( game_controller, {
     angle:45,
-    speed: 20,
-    rate: 5,
-    splay: 45,
-    x:10,
-    y:420 } );
+    speed: 15,
+    rate: 2.5,
+    concurrency: 10,
+    splay: 360,
+    speed_splay: 10,
+    max: 60,
+    x:300,
+    y:220 } );
 
   game_controller.add_emitter( emitter );
 
