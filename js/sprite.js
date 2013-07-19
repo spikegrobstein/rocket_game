@@ -12,6 +12,7 @@
     this.velocity_x = U.default_param( options.velocity_x, 0 );
     this.velocity_y = U.default_param( options.velocity_y, 0 );
 
+    // tags:
     this.tags = [];
     var tags = U.default_param( options.tags, [] );
     var tag = null;
@@ -24,6 +25,8 @@
     this.use_rotation = U.default_param( options.use_rotation, false );
 
     this.timestamp = Date.now(); // a timestamp of when it was created
+
+    this.dead = false;
 
     this.move(); // force it to the right locaion
   }

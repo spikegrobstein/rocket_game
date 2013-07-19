@@ -64,8 +64,17 @@ window.requestAnimFrame = function(){
     }
 
     var sprite = null;
-    for ( sprite in this.sprites ) {
-      sprite = this.sprites[sprite];
+    var i = 0;
+    for ( i in this.sprites ) {
+      sprite = this.sprites[i];
+
+      // kill any sprites marked dead and move on.
+      if ( sprite.dead ) {
+        this.element.removeChild( sprite.element );
+        this.sprites.splice( i, 1 );
+
+        continue;
+      }
 
 
       var filter = null;

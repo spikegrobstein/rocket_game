@@ -49,16 +49,18 @@
   }
 
   var death = function() {
-    var life = 5000; // 5 seconds
+    var life = 3000; // 5 seconds
 
-    if ( Date.now() - this.timestamp > life ) {
+    this.life = U.default_param( this.life, life );
 
+    if ( Date.now() - this.timestamp > this.life ) {
+      this.dead = true;
     }
   }
 
-  var emitters = function() {
-    //var
-  }
+  game_controller.add_filter( gravity );
+  game_controller.add_filter( bounce );
+  game_controller.add_filter( death );
 
   var emitter = new SpriteEmitter( game_controller, {
     angle:45,
@@ -67,14 +69,13 @@
     concurrency: 10,
     splay: 360,
     speed_splay: 10,
+    life: 1000,
     max: 60,
     x:300,
     y:220 } );
 
   game_controller.add_emitter( emitter );
 
-  game_controller.add_filter( gravity );
-  game_controller.add_filter( bounce );
 
   game_controller.run();
 

@@ -19,6 +19,8 @@
 
     this.splay = U.default_param( options.splay, 0 ) ;
     this.speed_splay = U.default_param( options.speed_splay, 0 );
+
+    this.life = U.default_param( options.life, 3000 );
   };
 
   SpriteEmitter.prototype.signal = function() {
@@ -48,6 +50,7 @@
       var splay_speed = this.speed + ( Math.random() * this.speed_splay ) - ( this.speed_splay / 2 );
 
       sprite.setAngle( splay_angle, splay_speed );
+      sprite.life = this.life;
 
       this.controller.add_sprite( sprite );
 
