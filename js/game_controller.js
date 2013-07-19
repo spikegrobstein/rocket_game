@@ -15,7 +15,7 @@ window.requestAnimFrame = function(){
   var GameController = function( element, options ) {
     this.ticks = 0; // incremented for each frame that's displayed.
     this.element = element;
-    this.frame_delay = 10;
+
     this.sprites = [];
     this.behaviors = {};
     this.emitters = [];
@@ -40,8 +40,6 @@ window.requestAnimFrame = function(){
   };
 
   GameController.prototype.run = function(id) {
-    //this.run_loop = setInterval( this.step.bind(this), this.frame_delay );
-
     requestAnimFrame(this.run.bind(this));
     this.step();
     this.ticks += 1;
