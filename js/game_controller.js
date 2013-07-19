@@ -39,11 +39,6 @@ window.requestAnimFrame = function(){
     sprite.game_controller = this;
   };
 
-  GameController.prototype.run = function(id) {
-    requestAnimFrame(this.run.bind(this));
-    this.step();
-    this.ticks += 1;
-  };
 
   GameController.prototype.addBehavior = function( name, behavior_handler ) {
     this.behaviors[name] = behavior_handler ;
@@ -62,6 +57,30 @@ window.requestAnimFrame = function(){
     return this;
   }
 
+  GameController.prototype.spritesWithTag = function( tag ) {
+    var results = [],
+        i = 0,
+        sprite = null;
+
+    for ( i in this.sprites ) {
+      sprite = this.sprites[i];
+
+      if ( sprite.hasTag( tag ) ) {
+        results.push( sprite );
+      }
+    }
+
+    return results;
+  }
+
+  // turn on animations
+  GameController.prototype.run = function(id) {
+    requestAnimFrame(this.run.bind(this));
+    this.step();
+    this.ticks += 1;
+  };
+
+  // animate one frame
   GameController.prototype.step = function(timestamp) {
     var emitter = null;
     for ( emitter in this.emitters ) {
