@@ -5,23 +5,16 @@
   game_controller
     .addBehavior( 'gravity', function() {
       var g = .05;
-      var resistance = 0.5;//.025;
 
       if ( this.hasTag('no_gravity') ) { return ; }
 
       this.velocity_y += g;
 
-      if ( this.velocity_x > 0 ) {
-        this.velocity_x -= resistance;
-      } else {
-        this.velocity_x += resistance;
-      }
-
     } )
     .addBehavior( 'bounce', function() {
       var bounce_factor = .8;
 
-      if ( this.hasTag('rocket') ) { return; }
+      // if ( this.hasTag('rocket') ) { return; }
 
       if ( this.y > 400 ) {
         this.y = 400;
