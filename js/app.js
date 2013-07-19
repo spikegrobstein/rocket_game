@@ -63,21 +63,22 @@
   game_controller.add_filter( death );
 
   var emitter = new SpriteEmitter( game_controller, {
-    angle:45,
+    angle:-60,
     speed: 15,
     rate: 2.5,
     concurrency: 10,
-    splay: 360,
+    splay: 30,
     speed_splay: 10,
-    life: 1000,
-    max: 60,
+    life: 5000,
+    max: 10,
     x:300,
     y:220 } );
 
   game_controller.add_emitter( emitter );
 
-
   game_controller.run();
+
+  game_controller.message_bus.subscribe( 'blast', function() { this.count = 0; }.bind(emitter) );
 
   var keyboard_driver = new KeyboardDriver(game_controller.message_bus);
 
@@ -91,7 +92,11 @@
 
   keyboard_driver.handle(37, function() {
     rocket.setAngle( rocket.angle() - 1 );
-  })
+  });
+
+  keyboard_driver.handle('B', function() {
+    this.publish('blast');
+  }.bind(game_controller.message_bus));
 
   keyboard_driver.handle('A', function() { console.log('a was pressed' ) } );
 
