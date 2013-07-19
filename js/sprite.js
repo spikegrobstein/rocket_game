@@ -18,7 +18,7 @@
     var tag = null;
     for ( tag in tags ) {
       tag = tags[tag];
-      this.tags.push( tag );
+      this.addTag( tag );
     }
 
     // set this to true to have the element rotate
@@ -31,9 +31,20 @@
     this.move(); // force it to the right locaion
   }
 
+  // return true if this sprite has the given tag
   Sprite.prototype.hasTag = function( tag ) {
     return this.tags.indexOf( tag ) >= 0;
   };
+
+  // add a tag to this sprite, but only if it doesn't already have one
+  // return this to enable chaining.
+  Sprite.prototype.addTag = function( tag ) {
+    if ( !this.hasTag( tag ) ) {
+      this.tags.push( tag );
+    }
+
+    return this;
+  }
 
   // move this object to the given x,y coordinates
   Sprite.prototype.move_to = function( x, y ) {
@@ -80,17 +91,25 @@
 
     this.velocity_x = ( speed * scale_x ),
     this.velocity_y = ( speed * scale_y );
+
+    return this;
+  }
+
+  Sprite.prototype.setSpriteAngle = function( angle ) {
+    var rotation = 'rotate(' + angle + 'deg)';
+
+    this.element.style['transform'] = rotation;
+    this.element.style['-ms-transform'] = rotation;
+    this.element.style['-webkit-transform'] = rotation;
+
+    return this;
   }
 
   // fire one animation step.
   // based on the velocity, this will move the sprite one animation frame.
   Sprite.prototype.step = function() {
     if ( this.use_rotation ) {
-      var rotation = 'rotate(' + this.angle() + 'deg)';
-
-      this.element.style['transform'] = rotation;
-      this.element.style['-ms-transform'] = rotation;
-      this.element.style['-webkit-transform'] = rotation;
+      this.setSpriteAngle( this.angle() );
     }
 
     this.move_to( this.x + this.velocity_x, this.y + this.velocity_y );

@@ -1,65 +1,64 @@
 (function( globals, document ) {
 
-  var field = document.getElementById('rocket_game');
-
-  var game_controller = new GameController( field );
-
-  var rocket = null;
-  var i = 0;
-  // for ( i = 0; i < 20; i++ ) {
-    // var rocket_element = document.createElement('div');
-
-    // rocket_element.setAttribute('class', 'rocket');
-    // field.appendChild(rocket_element);
-
-    // rocket = new Sprite( rocket_element, {x:300 , y:420, use_rotation: true });
-
-    // var angle = Math.random() * 140 + 20 ;
-    // var speed = Math.random() * 6 + 20;
-
-    // rocket.setAngle(-angle, speed);
-    // game_controller.add_sprite( rocket );
-  // }
-
-  // var rocket = new Sprite( rocket_element, { velocity_x: .75, velocity_y: .75, use_rotation: true, x:50, y:380 });
-  // rocket.setAngle(-45, 5);
+  var game_controller = new GameController( document.getElementById('rocket_game') );
 
   var gravity = function() {
-    var g = .5;
-    var resistance = 0;//.025;
+        var g = .05;
+        var resistance = 0.5;//.025;
 
-    if ( this.hasTag('no_gravity') ) { return ; }
+        if ( this.hasTag('no_gravity') ) { return ; }
 
-    this.velocity_y += g;
+        this.velocity_y += g;
 
-    if ( this.velocity_x > 0 ) {
-      this.velocity_x -= resistance;
-    } else {
-      this.velocity_x += resistance;
-    }
-  };
+        if ( this.velocity_x > 0 ) {
+          this.velocity_x -= resistance;
+        } else {
+          this.velocity_x += resistance;
+        }
+      },
 
-  var bounce = function() {
-    var bounce_factor = .8;
+      bounce = function() {
+        var bounce_factor = .8;
 
-    if ( this.y > 400 ) {
-      this.y = 400;
-      this.velocity_y = -this.velocity_y * bounce_factor;
-    }
-  }
+        if ( this.hasTag('rocket') ) { return; }
 
-  var death = function() {
-    var life = 3000; // 5 seconds
+        if ( this.y > 400 ) {
+          this.y = 400;
+          this.velocity_y = -this.velocity_y * bounce_factor;
+        }
+      },
 
-    this.life = U.default_param( this.life, life );
+      rocket_observer = function() {
+        if ( ! this.hasTag('rocket') ) { return; }
 
-    if ( Date.now() - this.timestamp > this.life ) {
-      this.dead = true;
-    }
-  }
+        if ( this.y > 450 ) {
+          // alert('Boom: ' + this.velocity_y);
+          this.velocity_y = 0;
+          this.addTag('no_gravity');
+        }
+
+        if ( this.fuel > 0 ) {
+          if ( this.rocket_on ) {
+            this.velocity_y -= 0.25;
+            this.fuel -= 0.1
+          }
+        }
+      },
+
+      death = function() {
+        if ( this.hasTag('rocket') ) { return; }
+        var life = 3000; // 5 seconds
+
+        this.life = U.default_param( this.life, life );
+
+        if ( Date.now() - this.timestamp > this.life ) {
+          this.dead = true;
+        }
+      };
 
   game_controller.add_filter( gravity );
   game_controller.add_filter( bounce );
+  game_controller.add_filter( rocket_observer );
   game_controller.add_filter( death );
 
   var emitter = new SpriteEmitter( game_controller, {
@@ -74,25 +73,43 @@
     x:300,
     y:220 } );
 
-  game_controller.add_emitter( emitter );
+  // game_controller.add_emitter( emitter );
 
-  game_controller.run();
+  // create rocket
+  var rocket_element = document.createElement('div');
+  rocket_element.setAttribute('class', 'rocket');
+  var rocket = new Sprite( rocket_element, {
+    x: 300,
+    y: 100,
+    tags: [ 'rocket' ]
+  });
+
+  rocket.setAngle(0, 0);
+  rocket.setSpriteAngle(-90);
+  rocket.fuel = 100;
+
+  game_controller.add_sprite( rocket );
 
   game_controller.message_bus.subscribe( 'blast', function() { this.count = 0; }.bind(emitter) );
 
   var keyboard_driver = new KeyboardDriver(game_controller.message_bus);
 
   keyboard_driver.handle(' ', function() {
-    rocket.setAngle( rocket.angle() + 45 );
-  });
+    this.rocket_on = true;
+  }.bind(rocket),
+  function() {
+    this.rocket_on = false;
+  }.bind(rocket));
 
-  keyboard_driver.handle(39, function() {
-    rocket.setAngle( rocket.angle() + 1 );
-  });
-
+  // left
   keyboard_driver.handle(37, function() {
-    rocket.setAngle( rocket.angle() - 1 );
+    this.velocity_x -= 1;
   });
+  // right
+  keyboard_driver.handle(39, function() {
+    this.velocity_x += 1;
+  }.bind(rocket));
+
 
   keyboard_driver.handle('B', function() {
     this.publish('blast');
@@ -100,6 +117,10 @@
 
   keyboard_driver.handle('A', function() { console.log('a was pressed' ) } );
 
+  // ok, start it up
+  game_controller.run();
+
+  // attach some shit to the main window
   globals.keyboard_driver = keyboard_driver;
   globals.game_controller = game_controller;
 
