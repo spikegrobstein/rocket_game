@@ -66,8 +66,11 @@
 
   // move to the current x/y
   Sprite.prototype.move = function() {
-    this.element.style.left = this.x + 'px';
-    this.element.style.top = this.y + 'px';
+    var translate = 'translate3d(' + this.x + 'px,' + this.y + 'px,0) rotate(' + this.angle() + 'deg)';
+    this.element.style.transform = translate;
+    this.element.style.WebkitTransform = translate;
+    // this.element.style.left = this.x + 'px';
+    // this.element.style.top = this.y + 'px';
   };
 
   // calculate the angle based on velocities
@@ -119,9 +122,7 @@
   // fire one animation step.
   // based on the velocity, this will move the sprite one animation frame.
   Sprite.prototype.step = function() {
-    if ( this.use_rotation ) {
-      this.setSpriteAngle( this.angle() );
-    }
+    this.use_rotation && this.setSpriteAngle( this.angle() );
 
     this.move_to( this.x + this.velocity_x, this.y + this.velocity_y );
   };
