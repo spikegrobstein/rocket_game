@@ -23,6 +23,7 @@
 
     // set this to true to have the element rotate
     this.use_rotation = U.default_param( options.use_rotation, false );
+    this.rotation = 0;
 
     this.timestamp = Date.now(); // a timestamp of when it was created
 
@@ -66,11 +67,19 @@
 
   // move to the current x/y
   Sprite.prototype.move = function() {
-    var translate = 'translate3d(' + this.x + 'px,' + this.y + 'px,0) rotate(' + this.angle() + 'deg)';
-    this.element.style.transform = translate;
-    this.element.style.WebkitTransform = translate;
-    // this.element.style.left = this.x + 'px';
-    // this.element.style.top = this.y + 'px';
+    var translate = 'translate3d(' + this.x + 'px,' + this.y + 'px,0)';
+
+    if ( this.use_rotation ) {
+      translate += 'rotate(' + this.angle() + 'deg)';
+    } else {
+      translate += 'rotate(' + this.rotation + 'deg)';
+    }
+
+    this.element.style['transform'] = translate;
+    this.element.style['-ms-transform'] = translate;
+    this.element.style['-webkit-transform'] = translate;
+
+    return this;
   };
 
   // calculate the angle based on velocities
@@ -109,12 +118,10 @@
     return this;
   }
 
-  Sprite.prototype.setSpriteAngle = function( angle ) {
-    var rotation = 'rotate(' + angle + 'deg)';
+  Sprite.prototype.setSpriteAngle = function( angle, delay_rotate ) {
+    this.rotation = angle;
 
-    this.element.style['transform'] = rotation;
-    this.element.style['-ms-transform'] = rotation;
-    this.element.style['-webkit-transform'] = rotation;
+    delay_rotate && this.move();
 
     return this;
   }
@@ -122,7 +129,6 @@
   // fire one animation step.
   // based on the velocity, this will move the sprite one animation frame.
   Sprite.prototype.step = function() {
-    this.use_rotation && this.setSpriteAngle( this.angle() );
 
     this.move_to( this.x + this.velocity_x, this.y + this.velocity_y );
   };
