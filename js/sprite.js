@@ -24,6 +24,9 @@
     // set this to true to have the element rotate
     this.use_rotation = U.default_param( options.use_rotation, false );
 
+    // the angle to rotate the sprite when use_rotation is false
+    this.rotation = 0;
+
     this.timestamp = Date.now(); // a timestamp of when it was created
 
     this.dead = false;
@@ -64,19 +67,34 @@
     this.move();
   };
 
-  // move to the current x/y
+  // move to the current this.x/this.y
+  // also handle applying any necessary rotation
   Sprite.prototype.move = function() {
-    this.element.style.left = this.x + 'px';
-    this.element.style.top = this.y + 'px';
+    var translate = 'translate3d(' + this.x + 'px,' + this.y + 'px,0)';
+
+    if ( this.use_rotation ) {
+      // auto-rotate (face the direction of movement)
+      translate += 'rotate(' + this.angle() + 'deg)';
+    } else {
+      // manual rotation (use setSpriteRotation() to rotate sprite)
+      translate += 'rotate(' + this.rotation + 'deg)';
+    }
+
+    this.element.style['transform'] = translate;
+    this.element.style['-ms-transform'] = translate;
+    this.element.style['-webkit-transform'] = translate;
+
+    return this;
   };
 
-  // calculate the angle based on velocities
+  // calculate the angle based on x/y velocities
   Sprite.prototype.angle = function() {
     // need to inverse the y axis because it's kinda upside down and convert to degrees
     var degrees = U.Math.rad2deg( Math.atan2( this.velocity_x, -this.velocity_y ) );
 
     // we want this angle to be in sync with the same angles that CSS uses for rotation
     // so this ensures that what CSS calls 10 degress is the same thing we call 10 degrees
+    // 0 degrees == ->
     degrees -= 90;
     if ( degrees < 0 ) {
       degrees += 360;
@@ -106,12 +124,13 @@
     return this;
   }
 
-  Sprite.prototype.setSpriteAngle = function( angle ) {
-    var rotation = 'rotate(' + angle + 'deg)';
+  // manually rotate the sprite.
+  // This only works if this.use_rotation is false
+  Sprite.prototype.setSpriteRotation = function( angle, delay_rotate ) {
+    this.rotation = angle;
 
-    this.element.style['transform'] = rotation;
-    this.element.style['-ms-transform'] = rotation;
-    this.element.style['-webkit-transform'] = rotation;
+    // if delay_rotate is set, don't move immediately.
+    delay_rotate || this.move();
 
     return this;
   }
@@ -119,10 +138,6 @@
   // fire one animation step.
   // based on the velocity, this will move the sprite one animation frame.
   Sprite.prototype.step = function() {
-    if ( this.use_rotation ) {
-      this.setSpriteAngle( this.angle() );
-    }
-
     this.move_to( this.x + this.velocity_x, this.y + this.velocity_y );
   };
 
