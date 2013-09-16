@@ -2,22 +2,51 @@
 
   var game_controller = new GameController( document.getElementById('rocket_game') );
 
-  globals.gravity = 0;
+  globals.gravity = 0.2;
   globals.bounce_factor = 1;
 
   game_controller
     .addBehavior( 'gravity', function() {
 
-      if ( this.hasTag('no_gravity') ) { return ; }
+      if ( ! this.hasTag('gravity') ) { return ; }
 
       var g = globals.gravity;
       this.velocity_y += g;
 
     } )
-    .addBehavior( 'bounce', function() {
-      var bounce_factor = globals.bounce_factor;
+    .addBehavior( 'superman', function() {
+      if ( ! this.hasTag('superman') ) { return; }
 
-      // if ( this.hasTag('rocket') ) { return; }
+      this.velocity_y = Math.sin( globals.game_controller.ticks / 10 ) / 2;
+
+      // do some collision detection
+      var bouncer;
+      for ( bouncer in globals.game_controller.spritesWithTag( 'bouncer' ) ) {
+        bouncer = globals.game_controller.spritesWithTag( 'bouncer' )[bouncer];
+
+        if ( bouncer.hasTag('gravity') ) { return; }
+
+        if ( this.isOverlapping( bouncer ) ) {
+          bouncer.addTag('gravity');
+          bouncer.element.className += ' dead'
+          // bouncer.addTag('dead');
+
+          // bouncer.velocity_y = 1;
+          // bouncer.velocity_x = 0;
+        }
+
+        if ( globals.debug ) {
+          console.log(this);
+          console.log(bouncer);
+          return;
+        }
+        // console.log( this.x + ',' + this.y + ' <=> ' + bouncer.x + ',' + bouncer.y );
+      }
+    } )
+    .addBehavior( 'bounce', function() {
+      if ( ! this.hasTag('bouncer') ) { return; }
+
+      var bounce_factor = this.hasTag('gravity') ? .4 : 1;
 
       if ( this.y > 550 ) {
         this.y = 550;
@@ -37,7 +66,8 @@
 
     } )
     .addBehavior( 'death', function() {
-      if ( globals.gravity == 0 ) { return ; }
+      if ( ! this.hasTag( 'gravity' ) ) { return; }
+      // if ( globals.gravity == 0 ) { return ; }
 
       if ( this.y > 545 && this.velocity_y < 1 && this.velocity_y > -1 ) {
         this.dead = true;
@@ -58,6 +88,15 @@
 
   // game_controller.add_emitter( emitter );
 
+  var superman_element = document.createElement('div');
+  superman_element.setAttribute('class', 'superman');
+  var superman = new Sprite( superman_element , {
+    x: 400,
+    y: 300,
+    tags: [ 'superman' ]
+  });
+  game_controller.add_sprite( superman );
+
   // create rocket
   var i = 0;
   for ( i = 0; i < 100; i++ ) {
@@ -66,6 +105,7 @@
     var rocket = new Sprite( rocket_element, {
       x: Math.random() * 800,
       y: Math.random() * 600,
+      tags: [ 'bouncer' ],
       use_rotation: true
     });
 
@@ -92,13 +132,13 @@
   // }.bind(rocket));
 
   // left
-  keyboard_driver.handle(37, function() {
-    this.velocity_x -= 1;
-  }.bind(rocket));
-  // right
-  keyboard_driver.handle(39, function() {
-    this.velocity_x += 1;
-  }.bind(rocket));
+  // keyboard_driver.handle(37, function() {
+    // this.velocity_x -= 1;
+  // }.bind(rocket));
+  // // right
+  // keyboard_driver.handle(39, function() {
+    // this.velocity_x += 1;
+  // }.bind(rocket));
 
 
   keyboard_driver.handle('B', function() {
@@ -107,11 +147,14 @@
 
   keyboard_driver.handle('A', function() { console.log('a was pressed' ) } );
 
-  // ok, start it up
-  game_controller.run();
-
   // attach some shit to the main window
   globals.keyboard_driver = keyboard_driver;
   globals.game_controller = game_controller;
+
+  globals.debug = false;
+
+  // ok, start it up
+  game_controller.run();
+
 
 })( window, document );

@@ -12,6 +12,7 @@
     this.velocity_x = U.default_param( options.velocity_x, 0 );
     this.velocity_y = U.default_param( options.velocity_y, 0 );
 
+
     // tags:
     this.tags = [];
     var tags = U.default_param( options.tags, [] );
@@ -58,6 +59,36 @@
     }
 
     return this;
+  }
+
+  Sprite.prototype.isOverlapping = function( other_sprite ) {
+    var this_width = this.element.offsetWidth,
+        this_height = this.element.offsetHeight,
+        other_width = other_sprite.element.offsetWidth,
+        other_height = other_sprite.element.offsetHeight,
+        a_x1 = this.x,
+        a_y1 = this.y,
+        a_x2 = this.x + this_width,
+        a_y2 = this.y + this_height,
+        b_x1 = other_sprite.x,
+        b_y1 = other_sprite.y,
+        b_x2 = other_sprite.x + other_width,
+        b_y2 = other_sprite.y + other_height;
+
+    // console.log(this);
+    // console.log(other_sprite);
+    // console.log('-');
+    // return true;
+
+    return a_x1 < b_x2
+      && a_x2 > b_x1
+      && a_y1 < b_y2
+      && a_y2 > b_y1;
+
+    return this.x < other_sprite.x + other_width
+      && this.x + this_width > other_sprite.x
+      && this.y < other_sprite.y + other_height
+      && this.y + this_height > other_sprite.y;
   }
 
   // move this object to the given x,y coordinates
