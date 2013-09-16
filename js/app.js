@@ -17,14 +17,14 @@
     .addBehavior( 'superman', function() {
       if ( ! this.hasTag('superman') ) { return; }
 
-      this.velocity_y = Math.sin( globals.game_controller.ticks / 10 ) / 2;
+      this.velocity_y = Math.sin( globals.game_controller.ticks / 10 );
 
       // do some collision detection
       var bouncer;
       for ( bouncer in globals.game_controller.spritesWithTag( 'bouncer' ) ) {
         bouncer = globals.game_controller.spritesWithTag( 'bouncer' )[bouncer];
 
-        if ( bouncer.hasTag('gravity') ) { return; }
+        if ( bouncer.hasTag('gravity') ) { continue; }
 
         if ( this.isOverlapping( bouncer ) ) {
           bouncer.addTag('gravity');
@@ -120,8 +120,12 @@
   var keyboard_driver = new KeyboardDriver(game_controller.message_bus);
 
   keyboard_driver.handle(' ', function() {
-    globals.gravity = 0.2;
-    globals.bounce_factor = 0.8;
+    var s;
+    for ( s in game_controller.sprites ) {
+      s = game_controller.sprites[s];
+      s.addTag('gravity');
+      s.element.className += ' dead';
+    }
   });
 
   // keyboard_driver.handle(' ', function() {
