@@ -14,7 +14,7 @@
 
 
     // tags:
-    this.tags = [];
+    this.tags = {};
     var tags = U.default_param( options.tags, [] );
     var tag = null;
     for ( tag in tags ) {
@@ -37,15 +37,13 @@
 
   // return true if this sprite has the given tag
   Sprite.prototype.hasTag = function( tag ) {
-    return this.tags.indexOf( tag ) >= 0;
+    return typeof this.tags[tag] !== 'undefined';
   };
 
   // add a tag to this sprite, but only if it doesn't already have one
   // return this to enable chaining.
   Sprite.prototype.addTag = function( tag ) {
-    if ( !this.hasTag( tag ) ) {
-      this.tags.push( tag );
-    }
+    this.tags[tag] = 1;
 
     return this;
   }
@@ -53,10 +51,7 @@
   // remove the given tag
   // return this to enable chaining.
   Sprite.prototype.removeTag = function( tag ) {
-    var index = this.tags.indexOf( tag );
-    if ( index >= 0 ) {
-      this.tags.splice( index );
-    }
+    delete this.tags[tag];
 
     return this;
   }
