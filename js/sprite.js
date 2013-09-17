@@ -70,29 +70,28 @@
     return this;
   }
 
+  Sprite.prototype.coordinates = function() {
+    var w = this.element.offsetWidth,
+        h = this.element.offsetHeight;
+
+    return {
+      x1: this.x,
+      y1: this.y,
+      x2: this.x + w,
+      y2: this.y + h,
+      width: w,
+      height: h
+    }
+  }
+
   Sprite.prototype.isOverlapping = function( other_sprite ) {
-    var this_width = this.element.offsetWidth,
-        this_height = this.element.offsetHeight,
-        other_width = other_sprite.element.offsetWidth,
-        other_height = other_sprite.element.offsetHeight,
-        a_x1 = this.x,
-        a_y1 = this.y,
-        a_x2 = this.x + this_width,
-        a_y2 = this.y + this_height,
-        b_x1 = other_sprite.x,
-        b_y1 = other_sprite.y,
-        b_x2 = other_sprite.x + other_width,
-        b_y2 = other_sprite.y + other_height;
+    var a = this.coordinates(),
+        b = other_sprite.coordinates();
 
-    // console.log(this);
-    // console.log(other_sprite);
-    // console.log('-');
-    // return true;
-
-    return a_x1 < b_x2
-      && a_x2 > b_x1
-      && a_y1 < b_y2
-      && a_y2 > b_y1;
+    return a.x1 < b.x2
+      && a.x2 > b.x1
+      && a.y1 < b.y2
+      && a.y2 > b.y1;
   }
 
   // move this object to the given x,y coordinates
