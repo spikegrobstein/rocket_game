@@ -29,18 +29,7 @@
         if ( this.isOverlapping( bouncer ) ) {
           bouncer.addTag('gravity');
           bouncer.element.className += ' dead'
-          // bouncer.addTag('dead');
-
-          // bouncer.velocity_y = 1;
-          // bouncer.velocity_x = 0;
         }
-
-        if ( globals.debug ) {
-          console.log(this);
-          console.log(bouncer);
-          return;
-        }
-        // console.log( this.x + ',' + this.y + ' <=> ' + bouncer.x + ',' + bouncer.y );
       }
     } )
     .addBehavior( 'bounce', function() {

@@ -12,7 +12,6 @@
     this.velocity_x = U.default_param( options.velocity_x, 0 );
     this.velocity_y = U.default_param( options.velocity_y, 0 );
 
-
     // tags:
     this.tags = {};
     var tags = U.default_param( options.tags, [] );
@@ -45,6 +44,14 @@
   Sprite.prototype.addTag = function( tag ) {
     this.tags[tag] = 1;
 
+    if ( typeof this.game_controller !== 'undefined' ) {
+      if ( typeof this.game_controller.tagged_sprites[tag] === 'undefined' ) {
+        this.game_controller.tagged_sprites[tag] = [];
+      }
+
+      this.game_controller.tagged_sprites[tag].push( this );
+    }
+
     return this;
   }
 
@@ -52,6 +59,13 @@
   // return this to enable chaining.
   Sprite.prototype.removeTag = function( tag ) {
     delete this.tags[tag];
+
+    if ( typeof this.game_controller !== 'undefined' ) {
+      var index = this.game_controller.tagged_sprites[tag].indexOf( this );
+      if ( index >= 0 ) {
+        this.game_controller.tagged_sprites[tag].splice( index );
+      }
+    }
 
     return this;
   }
@@ -79,11 +93,6 @@
       && a_x2 > b_x1
       && a_y1 < b_y2
       && a_y2 > b_y1;
-
-    return this.x < other_sprite.x + other_width
-      && this.x + this_width > other_sprite.x
-      && this.y < other_sprite.y + other_height
-      && this.y + this_height > other_sprite.y;
   }
 
   // move this object to the given x,y coordinates

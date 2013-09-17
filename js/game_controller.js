@@ -20,6 +20,8 @@ window.requestAnimFrame = function(){
     this.behaviors = {};
     this.emitters = [];
 
+    this.tagged_sprites = {};
+
     this.message_bus = new MessageBus();
 
     document.addEventListener('keydown', function(event) {
@@ -33,6 +35,15 @@ window.requestAnimFrame = function(){
 
   GameController.prototype.add_sprite = function( sprite ) {
     this.sprites.push( sprite );
+
+    var tag;
+    for ( tag in sprite.tags ) {
+      if ( typeof this.tagged_sprites[tag] === 'undefined' ) {
+        this.tagged_sprites[tag] = [];
+      }
+
+      this.tagged_sprites[tag].push( sprite );
+    }
 
     this.element.appendChild( sprite.element );
 
@@ -58,19 +69,11 @@ window.requestAnimFrame = function(){
   }
 
   GameController.prototype.spritesWithTag = function( tag ) {
-    var results = [],
-        i = 0,
-        sprite = null;
+    var sprites = this.tagged_sprites[tag];
 
-    for ( i in this.sprites ) {
-      sprite = this.sprites[i];
+    if ( typeof sprites === 'undefined' ) { return []; }
 
-      if ( sprite.hasTag( tag ) ) {
-        results.push( sprite );
-      }
-    }
-
-    return results;
+    return sprites;
   }
 
   // turn on animations
