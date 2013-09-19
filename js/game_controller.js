@@ -85,7 +85,14 @@ window.requestAnimFrame = function(){
 
   // animate one frame
   GameController.prototype.step = function(timestamp) {
-    var emitter = null;
+    var emitter = null,
+        sprite = null,
+        i = 0
+        behavior_handler = null;
+
+    // iterate over emitters and fire them
+    // these create sprites that will then have their behaviors called
+    // then step()
     for ( emitter in this.emitters ) {
       emitter = this.emitters[emitter];
 
@@ -93,9 +100,6 @@ window.requestAnimFrame = function(){
     }
 
     // iterate over all sprites and run all behaviors against them
-    var sprite = null,
-        i = 0
-        behavior_handler = null;
 
     for ( i in this.sprites ) {
       sprite = this.sprites[i];
