@@ -92,8 +92,11 @@ window.requestAnimFrame = function(){
       emitter.signal();
     }
 
-    var sprite = null;
-    var i = 0;
+    // iterate over all sprites and run all behaviors against them
+    var sprite = null,
+        i = 0
+        behavior_handler = null;
+
     for ( i in this.sprites ) {
       sprite = this.sprites[i];
 
@@ -107,11 +110,10 @@ window.requestAnimFrame = function(){
 
 
       // modify the sprite before having it step.
-      var behavior_handler = null;
-      for ( behavior in this.behaviors ) {
-        behavior = this.behaviors[behavior];
+      for ( behavior_handler in this.behaviors ) {
+        behavior_handler = this.behaviors[behavior_handler];
 
-        behavior.call( sprite, this );
+        behavior_handler.call( sprite, this );
       }
 
       sprite.step( this );
