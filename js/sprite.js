@@ -70,23 +70,27 @@
     return this;
   }
 
-  Sprite.prototype.coordinates = function() {
+  Sprite.prototype.coordinates = function( offset ) {
     var w = this.element.offsetWidth,
         h = this.element.offsetHeight;
 
+    if ( typeof offset === 'undefined' ) {
+      offset = 0;
+    }
+
     return {
-      x1: this.x,
-      y1: this.y,
-      x2: this.x + w,
-      y2: this.y + h,
-      width: w,
-      height: h
+      x1: this.x + offset,
+      y1: this.y + offset,
+      x2: this.x + w - offset,
+      y2: this.y + h - offset,
+      width: w - offset * 2,
+      height: h - offset * 2
     }
   }
 
-  Sprite.prototype.isOverlapping = function( other_sprite ) {
-    var a = this.coordinates(),
-        b = other_sprite.coordinates();
+  Sprite.prototype.isOverlapping = function( other_sprite, offset ) {
+    var a = this.coordinates( offset ),
+        b = other_sprite.coordinates( offset );
 
     return a.x1 < b.x2
       && a.x2 > b.x1

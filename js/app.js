@@ -26,7 +26,7 @@
 
         if ( bouncer.hasTag('gravity') ) { continue; }
 
-        if ( this.isOverlapping( bouncer ) ) {
+        if ( this.isOverlapping( bouncer, 15 ) ) {
           bouncer.addTag('gravity');
           bouncer.element.className += ' dead';
         }
