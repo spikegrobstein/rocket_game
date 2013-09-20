@@ -28,7 +28,7 @@
 
         if ( this.isOverlapping( bouncer ) ) {
           bouncer.addTag('gravity');
-          bouncer.element.className += ' dead'
+          bouncer.element.className += ' dead';
         }
       }
     } )
