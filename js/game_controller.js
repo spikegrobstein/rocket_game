@@ -16,13 +16,14 @@ window.requestAnimFrame = function(){
     this.ticks = 0; // incremented for each frame that's displayed.
     this.element = element;
 
-    this.sprites = [];
     this.behaviors = {};
     this.emitters = [];
 
-    this.tagged_sprites = {};
-
     this.message_bus = new MessageBus();
+    this.sprite_store = new SpriteStore( this.message_bus );
+
+    this.message_bus.subscribe( 'sprite_deleted', this.handleSpriteDeleted.bind(this) );
+    this.message_bus.subscribe( 'sprite_added', this.handleSpriteAdded.bind(this) );
 
     document.addEventListener('keydown', function(event) {
       this.message_bus.publish('keydown', event);
@@ -33,19 +34,23 @@ window.requestAnimFrame = function(){
     }.bind(this));
   };
 
-  GameController.prototype.add_sprite = function( sprite ) {
-    this.sprites.push( sprite );
+  GameController.prototype.handleSpriteDeleted = function( type, payload ) {
+    var sprite = payload.sprite,
+        store = payload.store;
 
-    var tag;
-    for ( tag in sprite.tags ) {
-      if ( typeof this.tagged_sprites[tag] === 'undefined' ) {
-        this.tagged_sprites[tag] = [];
-      }
+    console.log('sprite deleted:');
+    console.log(sprite);
+  };
 
-      this.tagged_sprites[tag].push( sprite );
-    }
+  GameController.prototype.handleSpriteAdded = function( type, payload ) {
+    var sprite = payload.sprite,
+        store = payload.store;
 
     this.element.appendChild( sprite.element );
+  };
+
+  GameController.prototype.add_sprite = function( sprite ) {
+    this.sprite_store.addSprite( sprite );
 
     sprite.game_controller = this;
   };
@@ -69,11 +74,7 @@ window.requestAnimFrame = function(){
   }
 
   GameController.prototype.spritesWithTag = function( tag ) {
-    var sprites = this.tagged_sprites[tag];
-
-    if ( typeof sprites === 'undefined' ) { return []; }
-
-    return sprites;
+    return this.sprite_store.spritesWithTag( tag );
   }
 
   // turn on animations
@@ -101,13 +102,13 @@ window.requestAnimFrame = function(){
 
     // iterate over all sprites and run all behaviors against them
 
-    for ( i in this.sprites ) {
-      sprite = this.sprites[i];
+    var sprites = this.sprite_store._sprites.values();
+    for ( sprite in sprites ) {
+      sprite = sprites[sprite];
 
       // kill any sprites marked dead and move on.
       if ( sprite.dead ) {
-        this.element.removeChild( sprite.element );
-        this.sprites.splice( i, 1 );
+        this.sprite_store.deleteSprite( sprite );
 
         continue;
       }

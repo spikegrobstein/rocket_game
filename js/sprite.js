@@ -45,7 +45,7 @@
     this.tags[tag] = 1;
 
     if ( typeof this.game_controller !== 'undefined' ) {
-      if ( typeof this.game_controller.tagged_sprites[tag] === 'undefined' ) {
+      if ( typeof this.game_controller.spritesWithTag(tag) === 'undefined' ) {
         this.game_controller.tagged_sprites[tag] = [];
       }
 
