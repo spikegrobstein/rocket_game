@@ -110,7 +110,7 @@
 
   keyboard_driver.handle(' ', function() {
     var s,
-        sprites = game_controller.sprite_store._sprites.values();
+        sprites = game_controller.sprite_store.spritesWithTag('bouncer');
     for ( s in sprites ) {
       s = sprites[s];
       s.addTag('gravity');
