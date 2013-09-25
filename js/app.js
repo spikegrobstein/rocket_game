@@ -109,9 +109,10 @@
   var keyboard_driver = new KeyboardDriver(game_controller.message_bus);
 
   keyboard_driver.handle(' ', function() {
-    var s;
-    for ( s in game_controller.sprites ) {
-      s = game_controller.sprites[s];
+    var s,
+        sprites = game_controller.sprite_store._sprites.values();
+    for ( s in sprites ) {
+      s = sprites[s];
       s.addTag('gravity');
       s.element.className += ' dead';
     }
