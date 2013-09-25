@@ -4,6 +4,7 @@
 
     // initialize it with an element
     this.element = element;
+    this.message_bus = undefined;
 
     this.x = U.default_param( options.x, 0 );
     this.y = U.default_param( options.y, 0 );
@@ -14,8 +15,9 @@
 
     // tags:
     this.tags = {};
-    var tags = U.default_param( options.tags, [] );
-    var tag = null;
+    var tags = U.default_param( options.tags, [] ),
+        tag = null;
+
     for ( tag in tags ) {
       tag = tags[tag];
       this.addTag( tag );
@@ -44,12 +46,8 @@
   Sprite.prototype.addTag = function( tag ) {
     this.tags[tag] = 1;
 
-    if ( typeof this.game_controller !== 'undefined' ) {
-      if ( typeof this.game_controller.spritesWithTag(tag) === 'undefined' ) {
-        this.game_controller.tagged_sprites[tag] = [];
-      }
-
-      this.game_controller.tagged_sprites[tag].push( this );
+    if ( typeof this.message_bus !== 'undefined' ) {
+      this.message_bus.publish( 'sprite_tag_added', { sprite: this, tag: tag } );
     }
 
     return this;
@@ -60,11 +58,8 @@
   Sprite.prototype.removeTag = function( tag ) {
     delete this.tags[tag];
 
-    if ( typeof this.game_controller !== 'undefined' ) {
-      var index = this.game_controller.tagged_sprites[tag].indexOf( this );
-      if ( index >= 0 ) {
-        this.game_controller.tagged_sprites[tag].splice( index );
-      }
+    if ( typeof this.message_bus !== 'undefined' ) {
+      this.message_bus.publish( 'sprite_tag_removed', { sprite: this, tag: tag } );
     }
 
     return this;

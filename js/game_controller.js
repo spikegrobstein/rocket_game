@@ -38,8 +38,7 @@ window.requestAnimFrame = function(){
     var sprite = payload.sprite,
         store = payload.store;
 
-    console.log('sprite deleted:');
-    console.log(sprite);
+    this.element.removeChild( sprite.element );
   };
 
   GameController.prototype.handleSpriteAdded = function( type, payload ) {
@@ -50,6 +49,7 @@ window.requestAnimFrame = function(){
   };
 
   GameController.prototype.add_sprite = function( sprite ) {
+    sprite.message_bus = this.message_bus;
     this.sprite_store.addSprite( sprite );
 
     sprite.game_controller = this;
@@ -112,7 +112,6 @@ window.requestAnimFrame = function(){
 
         continue;
       }
-
 
       // modify the sprite before having it step.
       for ( behavior_handler in this.behaviors ) {

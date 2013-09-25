@@ -79,7 +79,7 @@
 
   var superman_element = document.createElement('div');
   superman_element.setAttribute('class', 'superman');
-  var superman = new Sprite( superman_element , {
+  var superman = new Sprite( superman_element, {
     x: 400,
     y: 300,
     tags: [ 'superman' ]

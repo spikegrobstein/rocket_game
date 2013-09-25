@@ -18,6 +18,9 @@
 
     this._sprites = new HashSet(); // HashSet of sprites we're managing
     this._index = {};   // hash of HashSets keyed by tag
+
+    this.message_bus.subscribe( 'sprite_tag_added', this.handleSpriteTagAdded.bind(this) );
+    this.message_bus.subscribe( 'sprite_tag_removed', this.handleSpriteTagRemoved.bind(this) );
   };
 
   // returns the number of sprites in storage
@@ -37,7 +40,7 @@
 
     var tag;
     for ( tag in sprite.tags ) {
-      this.addSpriteToTags( tag, sprite );
+      this.addSpriteToTags( sprite, tag );
     }
 
     this.message_bus.publish( 'sprite_added', { store: this, sprite: sprite } );
@@ -70,7 +73,7 @@
   };
 
   // given a tag and a sprite, add given sprite to the tag index
-  SpriteStore.prototype.addSpriteToTags = function( tag, sprite ) {
+  SpriteStore.prototype.addSpriteToTags = function( sprite, tag ) {
     if ( typeof this._index[tag] === 'undefined' ) {
       this._index[tag] = new HashSet();
     }
@@ -78,6 +81,28 @@
     this._index[tag].add( sprite );
 
     return this;
+  };
+
+  SpriteStore.prototype.deleteSpriteFromTags = function( sprite, tag ) {
+    if ( typeof this._index[tag] === 'undefined') {
+      return this;
+    }
+
+    this._index[tag].remove( sprite );
+  };
+
+  SpriteStore.prototype.handleSpriteTagAdded = function( type, payload ) {
+    var sprite = payload.sprite,
+        tag = payload.tag;
+
+    this.addSpriteToTags( sprite, tag );
+  };
+
+  SpriteStore.prototype.handleSpriteTagRemoved = function( type, payload ) {
+    var sprite = payload.sprite,
+        tag = payload.tag;
+
+    this.deleteSpriteFromTags( sprite, tag );
   };
 
   globals.SpriteStore = SpriteStore;
