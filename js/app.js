@@ -84,7 +84,7 @@
     y: 300,
     tags: [ 'superman' ]
   });
-  game_controller.add_sprite( superman );
+  game_controller.addSprite( superman );
 
   // create rocket
   var i = 0;
@@ -99,7 +99,7 @@
     });
 
     rocket.setAngle( Math.random() * 360, Math.random() * 5 + 1);
-    game_controller.add_sprite( rocket );
+    game_controller.addSprite( rocket );
 
   }
 

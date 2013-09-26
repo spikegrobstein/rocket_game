@@ -48,16 +48,16 @@ window.requestAnimFrame = function(){
     this.element.appendChild( sprite.element );
   };
 
-  GameController.prototype.add_sprite = function( sprite ) {
+  GameController.prototype.addSprite = function( sprite ) {
     sprite.message_bus = this.message_bus;
     this.sprite_store.addSprite( sprite );
 
-    sprite.game_controller = this;
+    return this;
   };
 
 
-  GameController.prototype.addBehavior = function( name, behavior_handler ) {
-    this.behaviors[name] = behavior_handler ;
+  GameController.prototype.addBehavior = function( name, behavior_handler, behavior_finder ) {
+    this.behaviors[name] = [ behavior_handler, behavior_finder ] ;
 
     return this;
   }
@@ -88,8 +88,11 @@ window.requestAnimFrame = function(){
   GameController.prototype.step = function(timestamp) {
     var emitter = null,
         sprite = null,
-        i = 0
-        behavior_handler = null;
+        i = 0,
+        behavior_handler = null,
+        all_sprites = this.sprite_store._sprites.values(),
+        sprite_finder,
+        sprites;
 
     // iterate over emitters and fire them
     // these create sprites that will then have their behaviors called
@@ -100,10 +103,27 @@ window.requestAnimFrame = function(){
       emitter.signal();
     }
 
-    // iterate over all sprites and run all behaviors against them
+    // modify the sprite before having it step.
+    for ( behavior_handler in this.behaviors ) {
+      behavior_finder = this.behaviors[behavior_handler][1];
+      behavior_handler = this.behaviors[behavior_handler][0];
 
-    var sprites = this.sprite_store._sprites.values();
-    for ( sprite in sprites ) {
+      if ( typeof behavior_finder === 'function' ) {
+        sprites = behavior_finder();
+      } else if ( typeof behavior_finder === 'string' ) {
+        sprites = this.sprite_store.spritesWithTag( behavior_finder );
+      } else {
+        sprites = all_sprites;
+      }
+
+      for ( sprite in sprites ) {
+        sprite = sprites[sprite];
+        behavior_handler.call( sprite, this );
+      }
+    }
+
+    // sweep over all sprites and clean up dead guys and signal.
+    for ( sprite in all_sprites ) {
       sprite = sprites[sprite];
 
       // kill any sprites marked dead and move on.
@@ -111,13 +131,6 @@ window.requestAnimFrame = function(){
         this.sprite_store.deleteSprite( sprite );
 
         continue;
-      }
-
-      // modify the sprite before having it step.
-      for ( behavior_handler in this.behaviors ) {
-        behavior_handler = this.behaviors[behavior_handler];
-
-        behavior_handler.call( sprite, this );
       }
 
       sprite.step( this );
