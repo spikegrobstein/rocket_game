@@ -14,19 +14,6 @@
     }, 'gravity' )
     .addBehavior( 'superman', function() {
       this.velocity_y = Math.sin( globals.game_controller.ticks / 10 );
-
-      // do some collision detection
-      // var bouncer;
-      // for ( bouncer in globals.game_controller.spritesWithTag( 'bouncer' ) ) {
-        // bouncer = globals.game_controller.spritesWithTag( 'bouncer' )[bouncer];
-
-        // if ( bouncer.hasTag('gravity') ) { continue; }
-
-        // if ( this.isOverlapping( bouncer, 15 ) ) {
-          // bouncer.addTag('gravity');
-          // bouncer.element.className += ' dead';
-        // }
-      // }
     }, 'superman' )
     .addBehavior( 'superman-collision', function() {
       if ( this.hasTag('gravity') ) { return; }
