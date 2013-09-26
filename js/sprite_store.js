@@ -105,5 +105,18 @@
     this.deleteSpriteFromTags( sprite, tag );
   };
 
+  SpriteStore.prototype.removeDeadSprites = function() {
+    var sprite,
+        all_sprites = this._sprites.values();
+
+    for ( sprite in all_sprites ) {
+      sprite = all_sprites[sprite];
+
+      if ( sprite.dead ) {
+        this.deleteSprite( sprite );
+      }
+    }
+  }
+
   globals.SpriteStore = SpriteStore;
 })( window );

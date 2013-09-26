@@ -122,16 +122,12 @@ window.requestAnimFrame = function(){
       }
     }
 
+    this.sprite_store.removeDeadSprites();
+
     // sweep over all sprites and clean up dead guys and signal.
     for ( sprite in all_sprites ) {
       sprite = sprites[sprite];
 
-      // kill any sprites marked dead and move on.
-      if ( sprite.dead ) {
-        this.sprite_store.deleteSprite( sprite );
-
-        continue;
-      }
 
       sprite.step( this );
     }
