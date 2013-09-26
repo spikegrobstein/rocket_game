@@ -8,15 +8,11 @@
   game_controller
     .addBehavior( 'gravity', function() {
 
-      if ( ! this.hasTag('gravity') ) { return ; }
-
       var g = globals.gravity;
       this.velocity_y += g;
 
-    } )
+    }, 'gravity' )
     .addBehavior( 'superman', function() {
-      if ( ! this.hasTag('superman') ) { return; }
-
       this.velocity_y = Math.sin( globals.game_controller.ticks / 10 );
 
       // do some collision detection
@@ -31,10 +27,8 @@
           bouncer.element.className += ' dead';
         }
       }
-    } )
+    }, 'superman' )
     .addBehavior( 'bounce', function() {
-      if ( ! this.hasTag('bouncer') ) { return; }
-
       var bounce_factor = this.hasTag('gravity') ? .4 : 1;
 
       if ( this.y > 550 ) {
@@ -53,15 +47,14 @@
         this.velocity_x = -this.velocity_x * bounce_factor;
       }
 
-    } )
+    }, 'bouncer' )
     .addBehavior( 'death', function() {
-      if ( ! this.hasTag( 'gravity' ) ) { return; }
       // if ( globals.gravity == 0 ) { return ; }
 
       if ( this.y > 545 && this.velocity_y < 1 && this.velocity_y > -1 ) {
         this.dead = true;
       }
-    } );
+    }, 'gravity' );
 
   var emitter = new SpriteEmitter( game_controller, {
     angle:-60,
