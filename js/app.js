@@ -51,6 +51,18 @@
       if ( this.y > 545 && this.velocity_y < 1 && this.velocity_y > -1 ) {
         this.dead = true;
       }
+    } )
+    .addBehavior( 'player', 'player', function() {
+      var platform = globals.game_controller.spritesWithTag( 'platform' )[0],
+          platform_c = platform.coordinates();
+
+      if ( this.isOverlapping( platform ) ) {
+        this.velocity_y = 0;
+        this.y = platform.y - this.coordinates().height;
+        return;
+      }
+
+      this.velocity_y += globals.gravity;
     } );
 
   var emitter = new SpriteEmitter( game_controller, {
@@ -66,6 +78,24 @@
     y:220 } );
 
   // game_controller.add_emitter( emitter );
+
+  var platform_element = document.createElement('div');
+  platform_element.className = 'platform';
+  var platform = new Sprite( platform_element, {
+    x: 10,
+    y: 500,
+    tags: [ 'platform' ]
+  } );
+  game_controller.addSprite( platform );
+
+  var player_element = document.createElement('div');
+  player_element.className = 'player';
+  var player = new Sprite( player_element, {
+    x: 150,
+    y: 300,
+    tags: [ 'player' ]
+  } );
+  game_controller.addSprite( player );
 
   var superman_element = document.createElement('div');
   superman_element.setAttribute('class', 'superman');
@@ -93,10 +123,17 @@
 
   }
 
+  game_controller.message_bus.subscribe( 'player-jump', function() {
+    player.velocity_y = -10;
+  } );
 
   game_controller.message_bus.subscribe( 'blast', function() { this.count = 0; }.bind(emitter) );
 
   var keyboard_driver = new KeyboardDriver(game_controller.message_bus);
+
+  keyboard_driver.handle( 'J', function() {
+    game_controller.message_bus.publish( 'player-jump' );
+  });
 
   keyboard_driver.handle(' ', function() {
     var s,
