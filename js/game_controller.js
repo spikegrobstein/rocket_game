@@ -56,7 +56,11 @@ window.requestAnimFrame = function(){
   };
 
 
-  GameController.prototype.addBehavior = function( name, behavior_handler, behavior_finder ) {
+  GameController.prototype.addBehavior = function( name, behavior_finder, behavior_handler ) {
+    if ( typeof behavior_handler === 'undefined' ) {
+      behavior_handler = behavior_finder;
+      behavior_finder = undefined;
+    }
     this.behaviors[name] = [ behavior_handler, behavior_finder ] ;
 
     return this;
