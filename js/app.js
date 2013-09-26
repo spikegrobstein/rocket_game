@@ -16,18 +16,28 @@
       this.velocity_y = Math.sin( globals.game_controller.ticks / 10 );
 
       // do some collision detection
-      var bouncer;
-      for ( bouncer in globals.game_controller.spritesWithTag( 'bouncer' ) ) {
-        bouncer = globals.game_controller.spritesWithTag( 'bouncer' )[bouncer];
+      // var bouncer;
+      // for ( bouncer in globals.game_controller.spritesWithTag( 'bouncer' ) ) {
+        // bouncer = globals.game_controller.spritesWithTag( 'bouncer' )[bouncer];
 
-        if ( bouncer.hasTag('gravity') ) { continue; }
+        // if ( bouncer.hasTag('gravity') ) { continue; }
 
-        if ( this.isOverlapping( bouncer, 15 ) ) {
-          bouncer.addTag('gravity');
-          bouncer.element.className += ' dead';
-        }
-      }
+        // if ( this.isOverlapping( bouncer, 15 ) ) {
+          // bouncer.addTag('gravity');
+          // bouncer.element.className += ' dead';
+        // }
+      // }
     }, 'superman' )
+    .addBehavior( 'superman-collision', function() {
+      if ( this.hasTag('gravity') ) { return; }
+
+      var superman = globals.game_controller.spritesWithTag( 'superman' )[0];
+
+      if ( superman.isOverlapping( this, 15 ) ) {
+        this.addTag( 'gravity' );
+        this.element.className += ' dead';
+      }
+    }, 'bouncer' )
     .addBehavior( 'bounce', function() {
       var bounce_factor = this.hasTag('gravity') ? .4 : 1;
 
