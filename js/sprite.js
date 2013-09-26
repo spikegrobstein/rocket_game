@@ -174,6 +174,17 @@
     this.move_to( this.x + this.velocity_x, this.y + this.velocity_y );
   };
 
+  Sprite.prototype.setMessageBus = function( new_message_bus ) {
+
+    if ( typeof this.message_bus !== 'undefined' ) {
+      // TODO: if changing message bus, gotta unsubscribe from old one.
+      // this.message_bus.unsubscribeAll( this );
+    }
+
+    this.message_bus = new_message_bus;
+    this.message_bus.subscribe( 'step_frame', this.step.bind(this) );
+  }
+
   globals.Sprite = Sprite;
 
 })( window );

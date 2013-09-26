@@ -49,7 +49,7 @@ window.requestAnimFrame = function(){
   };
 
   GameController.prototype.addSprite = function( sprite ) {
-    sprite.message_bus = this.message_bus;
+    sprite.setMessageBus( this.message_bus );
     this.sprite_store.addSprite( sprite );
 
     return this;
@@ -108,6 +108,7 @@ window.requestAnimFrame = function(){
       behavior_finder = this.behaviors[behavior_handler][1];
       behavior_handler = this.behaviors[behavior_handler][0];
 
+      // if we use a finder, use that finder.
       if ( typeof behavior_finder === 'function' ) {
         sprites = behavior_finder();
       } else if ( typeof behavior_finder === 'string' ) {
@@ -123,14 +124,7 @@ window.requestAnimFrame = function(){
     }
 
     this.sprite_store.removeDeadSprites();
-
-    // sweep over all sprites and clean up dead guys and signal.
-    for ( sprite in all_sprites ) {
-      sprite = sprites[sprite];
-
-
-      sprite.step( this );
-    }
+    this.message_bus.publish( 'step_frame', this );
   };
 
   globals.GameController = GameController;
