@@ -73,6 +73,7 @@ window.requestAnimFrame = function(){
   }
 
   GameController.prototype.add_emitter = function( emitter ) {
+    emitter.setMessageBus( this.message_bus );
     this.emitters.push( emitter );
     return this;
   }
@@ -98,14 +99,7 @@ window.requestAnimFrame = function(){
         sprite_finder,
         sprites;
 
-    // iterate over emitters and fire them
-    // these create sprites that will then have their behaviors called
-    // then step()
-    for ( emitter in this.emitters ) {
-      emitter = this.emitters[emitter];
-
-      emitter.signal();
-    }
+    this.message_bus.publish( 'step_frame', this );
 
     // modify the sprite before having it step.
     for ( behavior_handler in this.behaviors ) {
@@ -128,7 +122,6 @@ window.requestAnimFrame = function(){
     }
 
     this.sprite_store.removeDeadSprites();
-    this.message_bus.publish( 'step_frame', this );
   };
 
   globals.GameController = GameController;

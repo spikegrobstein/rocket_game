@@ -57,7 +57,7 @@
           platform_c = platform.coordinates();
 
       if ( this.isOverlapping( platform ) ) {
-        this.velocity_y = 0;
+        this.velocity_y = -1;
         this.y = platform.y - this.coordinates().height;
         return;
       }
@@ -66,18 +66,19 @@
     } );
 
   var emitter = new SpriteEmitter( game_controller, {
-    angle:-60,
-    speed: 15,
-    rate: 2.5,
-    concurrency: 10,
+    tags: [ 'bouncer' ],
+    angle:35,
+    speed: 10,
+    rate: 1,
+    concurrency: 5,
     splay: 30,
-    speed_splay: 10,
+    speed_splay: 2,
     life: 5000,
-    max: 10,
+    max: 100,
     x:300,
     y:220 } );
 
-  // game_controller.add_emitter( emitter );
+  game_controller.add_emitter( emitter );
 
   var platform_element = document.createElement('div');
   platform_element.className = 'platform';

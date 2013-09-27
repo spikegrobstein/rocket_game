@@ -11,6 +11,8 @@
     this.rate = U.default_param( options.rate, 60 ); // 60fps, 1s.
     this.concurrency = U.default_param( options.concurrency, 1 ); // one at a time
 
+    this.tags = U.default_param( options.tags, [] );
+
     this.max = U.default_param( options.max, 10 );
     this.count = 0;
 
@@ -22,6 +24,13 @@
 
     this.life = U.default_param( options.life, 3000 );
   };
+
+  SpriteEmitter.prototype.setMessageBus = function( new_message_bus ) {
+    // TODO: unsubscribe from existing message bus
+
+    this.message_bus = new_message_bus;
+    this.message_bus.subscribe( 'step_frame', this.signal.bind(this) );
+  }
 
   SpriteEmitter.prototype.signal = function() {
 
@@ -44,7 +53,7 @@
       element.setAttribute('class', 'rocket');
       // this.controller.element.appendChild( element );
 
-      var sprite = new Sprite( element, { x:this.x, y:this.y, use_rotation:true } );
+      var sprite = new Sprite( element, { x:this.x, y:this.y, use_rotation:true, tags: this.tags } );
 
       var splay_angle = this.angle + ( Math.random() * this.splay ) - ( this.splay / 2 );
       var splay_speed = this.speed + ( Math.random() * this.speed_splay ) - ( this.speed_splay / 2 );
@@ -52,7 +61,7 @@
       sprite.setAngle( splay_angle, splay_speed );
       sprite.life = this.life;
 
-      this.controller.add_sprite( sprite );
+      this.controller.addSprite( sprite );
 
       this.count++;
     }
