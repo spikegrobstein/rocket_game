@@ -94,10 +94,15 @@
   }
 
   // move this object to the given x,y coordinates
-  Sprite.prototype.move_to = function( x, y ) {
+  Sprite.prototype.move_to = function( x, y, delay_move ) {
     this.x = x;
     this.y = y;
-    this.move();
+
+    if ( ! delay_move ) {
+      this.move();
+    }
+
+    return this;
   };
 
   // move to the current this.x/this.y
