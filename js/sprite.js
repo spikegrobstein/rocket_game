@@ -9,6 +9,14 @@
     this.x = U.default_param( options.x, 0 );
     this.y = U.default_param( options.y, 0 );
 
+    // need to use setTimeout here because offsetWidth/Height
+    // returns 0. using setTimeout(0) will allow time to update the DOM
+    // and offsetWidth/Height will return correct values
+    setTimeout(function() {
+      this.width = this.element.offsetWidth;
+      this.height = this.element.offsetHeight;
+    }.bind(this), 0);
+
     //velocities
     this.velocity_x = U.default_param( options.velocity_x, 0 );
     this.velocity_y = U.default_param( options.velocity_y, 0 );
@@ -66,9 +74,6 @@
   }
 
   Sprite.prototype.coordinates = function( offset ) {
-    var w = this.element.offsetWidth,
-        h = this.element.offsetHeight;
-
     if ( typeof offset === 'undefined' ) {
       offset = 0;
     }
@@ -76,10 +81,10 @@
     return {
       x1: this.x + offset,
       y1: this.y + offset,
-      x2: this.x + w - offset,
-      y2: this.y + h - offset,
-      width: w - offset * 2,
-      height: h - offset * 2
+      x2: this.x + this.width - offset,
+      y2: this.y + this.height - offset,
+      width: this.width - offset * 2,
+      height: this.height - offset * 2
     }
   }
 
